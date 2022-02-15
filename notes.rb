@@ -246,3 +246,29 @@ FakeJob.set(wait: 1.minute).perform_later
 
 FakeJob.set(wait_until: Date.tomorrow.noon).perform_later
 # By default, Sidekiq checks for scheduled job every 5 seconds (see doc: https://github.com/mperham/sidekiq/wiki/Scheduled-Jobs#checking-for-new-jobs).
+
+
+#13 Heroku SETUP
+# Have to use Redis Cloud: https://elements.heroku.com/addons/rediscloud
+# 0. Make sure to have a Heroku dyno: heroku create rails-background-jobs-demo --region=us
+# 1. Run on command line: heroku addons:create rediscloud
+# 2. Create file: config/initializers/redis.rb
+$redis = Redis.new
+
+# will never run on development, only on heroku
+url = ENV["REDISCLOUD_URL"]
+
+if url
+  Sidekiq.configure_server do |config|
+    config.redis = { url: url }
+  end
+
+  Sidekiq.configure_client do |config|
+    config.redis = { url: url }
+  end
+  $redis = Redis.new(:url => url)
+end
+# 3. Update your Procfile file
+# Procfile
+# web: bundle exec puma -C config/puma.rb
+# worker: bundle exec sidekiq -C config/sidekiq.yml
