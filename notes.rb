@@ -251,7 +251,8 @@ FakeJob.set(wait_until: Date.tomorrow.noon).perform_later
 #13 Heroku SETUP
 # Have to use Redis Cloud: https://elements.heroku.com/addons/rediscloud
 # 0. Make sure to have a Heroku dyno: heroku create rails-background-jobs-demo --region=us
-# 1. Run on command line: heroku addons:create rediscloud
+# 1. Run on command line (requires cc on heroku account):
+# heroku addons:create rediscloud
 # 2. Create file: config/initializers/redis.rb
 $redis = Redis.new
 
@@ -268,7 +269,7 @@ if url
   end
   $redis = Redis.new(:url => url)
 end
-# 3. Update your Procfile file
-# Procfile
+# 3. Create a Procfile file on same lvl as app or bin or config folders like yarn.lock
+# paste below contents
 # web: bundle exec puma -C config/puma.rb
 # worker: bundle exec sidekiq -C config/sidekiq.yml
