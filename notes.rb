@@ -81,7 +81,7 @@ end
 # Open a new terminal tab and run:
 sidekiq
 # One more terminal, in `rails c` run:
-FakeJob.perform_later # IMPORTANT!!!, sidekiq must be started, as per previous setup: `brew services start redis`
+FakeJob.perform_later # IMPORTANT!!!, sidekiq must be started just run `sidekiq` on a dedicated terminal, as per previous setup: `brew services start redis`
 # perform_later means run the job on the background
 # perform_now means run the job right after the command has been entered
 
@@ -253,7 +253,7 @@ FakeJob.set(wait_until: Date.tomorrow.noon).perform_later
 # 0. Make sure to have a Heroku dyno: heroku create rails-background-jobs-demo --region=us
 # 1. Run on command line (requires cc on heroku account):
 # heroku addons:create rediscloud
-# 2. Create file: config/initializers/redis.rb
+# 2. Create file: config/initializers/redis.rb, add below codes
 $redis = Redis.new
 
 # will never run on development, only on heroku
@@ -273,3 +273,19 @@ end
 # paste below contents
 # web: bundle exec puma -C config/puma.rb
 # worker: bundle exec sidekiq -C config/sidekiq.yml
+# 4. commit, push to heroku
+# git add .
+# git commit -m "heroku setup for sidekiq"
+# git push heroku master
+# don't forge to: `bundle lock --add-platform x86_64-linux` if ran into: remote:  !     Failed to install gems via Bundler.
+# git add .
+# git commit -m "add platform x86_64-linux"
+# 5. Turn on sidekiq on heroku:
+# in https://dashboard.heroku.com/apps/rails-background-jobs-demo/resources
+# Under Free Dynos, find: worker bundle exec sidekiq -C config/sidekiq.yml 
+# toggle the switch on
+# 6. Create jobs with free Heroku Scheduler, search from Resources > Add Ons
+# for eg use
+rails user:update_all
+# to run every 10 mins
+# 7. More reading on Heroku scheduler: https://devcenter.heroku.com/articles/scheduler
