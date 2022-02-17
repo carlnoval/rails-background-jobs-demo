@@ -250,7 +250,7 @@ FakeJob.set(wait_until: Date.tomorrow.noon).perform_later
 
 #13 Heroku SETUP
 # Have to use Redis Cloud: https://elements.heroku.com/addons/rediscloud
-# 0. Make sure to have a Heroku dyno: heroku create rails-background-jobs-demo --region=us
+# 0. Make sure to have a Heroku server: heroku create rails-background-jobs-demo --region=us
 # 1. Run on command line (requires cc on heroku account):
 # heroku addons:create rediscloud
 # 2. Create file: config/initializers/redis.rb, add below codes
@@ -289,3 +289,6 @@ end
 rails user:update_all
 # to run every 10 mins
 # 7. More reading on Heroku scheduler: https://devcenter.heroku.com/articles/scheduler
+# 8. Add at least 1 worker
+# heroku ps:scale worker=1
+# heroku ps # Check worker dyno is running
